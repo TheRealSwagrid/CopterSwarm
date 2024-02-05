@@ -16,6 +16,7 @@ class CopterSwarm(AbstractVirtualCapability):
 
     def __init__(self, server):
         super().__init__(server)
+        self.uri = "CopterSwarm"
         self.copters = []
         self.__locks = []
 
