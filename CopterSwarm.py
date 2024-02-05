@@ -25,7 +25,7 @@ class CopterSwarm(AbstractVirtualCapability):
         return {"DeviceList": self.copters}
 
     def GetAvaiableCopter(self, params: dict):
-        while self.running:
+        while self.running and len(self.copters) > 0:
             for i, l in enumerate(self.__locks):
                 if not l.locked():
                     l.acquire()
