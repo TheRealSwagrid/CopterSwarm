@@ -42,7 +42,7 @@ class CopterSwarm(AbstractVirtualCapability):
     def InitializeSwarm(self, params: dict):
         count = params["int"]
         for i in range(count):
-            self.copters.append(self.query_sync("TextToSpeech"))
+            self.copters.append(self.query_sync("VirtualCopter"))
             self.__locks.append(Lock())
         return {"DeviceList": self.copters}
 
