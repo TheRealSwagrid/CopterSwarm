@@ -23,7 +23,7 @@ class CopterSwarm(AbstractVirtualCapability):
     def AddCopter(self, params: dict):
         self.copters.append(json.loads(params["Device"]))
         self.__locks.append(Lock())
-        return {"DeviceList": [json.dumps(c) for c in self.copters]}
+        return {"DeviceList": self.copters}
 
     def GetAvaiableCopter(self, params: dict):
         while self.running and len(self.copters) > 0:
@@ -44,7 +44,7 @@ class CopterSwarm(AbstractVirtualCapability):
         for i in range(count):
             self.copters.append(self.query_sync("VirtualCopter"))
             self.__locks.append(Lock())
-        return {"DeviceList": [json.dumps(c) for c in self.copters]}
+        return {"DeviceList": self.copters}
 
     def loop(self):
         sleep(.0001)
