@@ -33,7 +33,7 @@ class CopterSwarm(AbstractVirtualCapability):
                     return {"Device": self.copters[i]}
 
     def FreeCopter(self, params: dict):
-        copter = params["Device"]
+        copter = json.loads(params["Device"])
         for i, c in enumerate(self.copters):
             if copter["id"] == c["id"] and copter["requirements"] == c["requirements"]:
                 self.__locks[i].release()
