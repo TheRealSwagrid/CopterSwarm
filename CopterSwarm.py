@@ -35,7 +35,7 @@ class CopterSwarm(AbstractVirtualCapability):
     def FreeCopter(self, params: dict):
         copter = params["Device"]
         for i, c in enumerate(self.copters):
-            if copter == c:
+            if copter["id"] == c["id"] and copter["requirements"] == c["requirements"]:
                 self.__locks[i].release()
                 return {"Device": c}
         raise ValueError(f"Device not found {copter}")
