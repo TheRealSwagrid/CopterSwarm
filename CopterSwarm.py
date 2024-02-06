@@ -23,14 +23,14 @@ class CopterSwarm(AbstractVirtualCapability):
     def AddCopter(self, params: dict):
         self.copters.append(params["Device"])
         self.__locks.append(Lock())
-        return {"DeviceList": json.dumps(self.copters)}
+        return {"DeviceList": [json.dumps(c) for c in self.copters]}
 
     def GetAvaiableCopter(self, params: dict):
         while self.running and len(self.copters) > 0:
             for i, l in enumerate(self.__locks):
                 if not l.locked():
                     l.acquire()
-                    return {"Device": self.copters[i]}
+                    return {"Device": json.dumps(self.copters[i])}
 
     def FreeCopter(self, params: dict):
         copter = params["Device"]
@@ -44,7 +44,7 @@ class CopterSwarm(AbstractVirtualCapability):
         for i in range(count):
             self.copters.append(self.query_sync("VirtualCopter"))
             self.__locks.append(Lock())
-        return {"DeviceList": self.copters}
+        return {"DeviceList": [json.dumps(c) for c in self.copters]}
 
     def loop(self):
         sleep(.0001)
