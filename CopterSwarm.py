@@ -30,7 +30,7 @@ class CopterSwarm(AbstractVirtualCapability):
             for i, l in enumerate(self.__locks):
                 if not l.locked():
                     l.acquire()
-                    return {"Device": json.dumps(self.copters[i])}
+                    return {"Device": self.copters[i]}
 
     def FreeCopter(self, params: dict):
         copter = params["Device"]
