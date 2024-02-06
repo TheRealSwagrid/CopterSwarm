@@ -35,9 +35,10 @@ class CopterSwarm(AbstractVirtualCapability):
     def FreeCopter(self, params: dict):
         copter = params["Device"]
         for i, c in enumerate(self.copters):
-            if copter is c:
+            if copter == c:
                 self.__locks[i].release()
                 return {"Device": c}
+        raise ValueError(f"Device not found {copter}")
 
     def InitializeSwarm(self, params: dict):
         count = params["int"]
