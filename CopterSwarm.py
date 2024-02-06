@@ -37,7 +37,7 @@ class CopterSwarm(AbstractVirtualCapability):
         for i, c in enumerate(self.copters):
             if copter is c:
                 self.__locks[i].release()
-                return params
+                return {"Device": c}
 
     def InitializeSwarm(self, params: dict):
         count = params["int"]
