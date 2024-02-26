@@ -9,7 +9,8 @@ from threading import Lock
 import numpy as np
 import quaternion
 from time import sleep
-from AbstractVirtualCapability import AbstractVirtualCapability, VirtualCapabilityServer, formatPrint
+from AbstractVirtualCapability import AbstractVirtualCapability, VirtualCapabilityServer, formatPrint, \
+    SubDeviceRepresentation
 
 
 class CopterSwarm(AbstractVirtualCapability):
@@ -33,9 +34,9 @@ class CopterSwarm(AbstractVirtualCapability):
                     return {"Device": self.copters[i]}
 
     def FreeCopter(self, params: dict):
-        copter = json.loads(params["Device"])
+        copter = SubDeviceRepresentation(params["Device"], self, None)
         for i, c in enumerate(self.copters):
-            if copter["id"] == c["id"] and copter["requirements"] == c["requirements"]:
+            if copter.ood_id == c["id"] and copter.json["requirements"] == c["requirements"]:
                 self.__locks[i].release()
                 return {"Device": c}
         raise ValueError(f"Device not found {copter}")
