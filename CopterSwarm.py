@@ -36,7 +36,7 @@ class CopterSwarm(AbstractVirtualCapability):
     def FreeCopter(self, params: dict):
         copter = SubDeviceRepresentation(params["Device"], self, None)
         for i, c in enumerate(self.copters):
-            if copter.ood_id == c["id"] and copter.json["requirements"] == c["requirements"]:
+            if copter.ood_id == c.ood_id and copter.json["requirements"] == c.json["requirements"]:
                 self.__locks[i].release()
                 return {"Device": c}
         raise ValueError(f"Device not found {copter}")
