@@ -69,6 +69,7 @@ if __name__ == '__main__':
             ip = str(sys.argv[2])
         server = VirtualCapabilityServer(port, ip)
         listener = CopterSwarm(server)
+        listener.uri = "CopterSwarm"
         listener.start()
         signal.signal(signal.SIGTERM, handler)
         listener.join()
