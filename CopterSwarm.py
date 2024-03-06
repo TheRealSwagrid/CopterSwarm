@@ -5,6 +5,7 @@ import signal
 import sys
 from copy import deepcopy
 from threading import Lock
+from typing import List
 
 import numpy as np
 import quaternion
@@ -18,7 +19,7 @@ class CopterSwarm(AbstractVirtualCapability):
     def __init__(self, server):
         super().__init__(server)
         self.uri = "CopterSwarm"
-        self.copters = []
+        self.copters: List[SubDeviceRepresentation] = []
         self.__locks = []
 
     def AddCopter(self, params: dict):
@@ -32,6 +33,7 @@ class CopterSwarm(AbstractVirtualCapability):
                 if not l.locked():
                     l.acquire()
                     return {"Device": self.copters[i]}
+        raise ValueError("No copter in this swarm!")
 
     def FreeCopter(self, params: dict):
         copter = SubDeviceRepresentation(params["Device"], self, None)
@@ -49,6 +51,12 @@ class CopterSwarm(AbstractVirtualCapability):
         return {"DeviceList": self.copters}
 
     def loop(self):
+        for i, copter in enumerate(self.copters):
+            battery_lvl = copter.invoke_sync("GetBatteryChargeLevel", {})["BatteryChargeLevel"]
+            if battery_lvl < 15.:
+                self.__locks[i].acquire()
+                copter.invoke_sync("SetBatteryChargeLevel", {"BatteryChargeLevel": 100})
+                self.__locks[i].release()
         sleep(.0001)
 
 
