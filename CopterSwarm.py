@@ -21,6 +21,7 @@ class CopterSwarm(AbstractVirtualCapability):
         self.uri = "CopterSwarm"
         self.copters: List[SubDeviceRepresentation] = []
         self.__locks = []
+        self.charging_station: SubDeviceRepresentation = None
         self.initialized = False
 
     def AddCopter(self, params: dict):
@@ -46,6 +47,7 @@ class CopterSwarm(AbstractVirtualCapability):
 
     def InitializeSwarm(self, params: dict):
         count = params["int"]
+        self.charging_station = self.query_sync("ChargingStation", 0)
         for i in range(count - len(self.copters)):
             self.copters.append(self.query_sync("VirtualCopter"))
             self.__locks.append(Lock())
@@ -59,6 +61,7 @@ class CopterSwarm(AbstractVirtualCapability):
                 if battery_lvl < 15.:
                     formatPrint(self, f"Loading Copter: {copter.ood_id}")
                     self.__locks[i].acquire()
+                    copter.invoke_sync("SetPosition", self.charging_station.invoke_sync("GetPosition"))
                     copter.invoke_sync("SetBatteryChargeLevel", {"BatteryChargeLevel": 100})
                     self.__locks[i].release()
         sleep(5)
