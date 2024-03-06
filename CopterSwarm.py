@@ -61,7 +61,7 @@ class CopterSwarm(AbstractVirtualCapability):
                 if battery_lvl < 15.:
                     formatPrint(self, f"Loading Copter: {copter.ood_id}")
                     self.__locks[i].acquire()
-                    copter.invoke_sync("SetPosition", self.charging_station.invoke_sync("GetPosition"))
+                    copter.invoke_sync("SetPosition", self.charging_station.invoke_sync("GetPosition", {}))
                     copter.invoke_sync("SetBatteryChargeLevel", {"BatteryChargeLevel": 100})
                     self.__locks[i].release()
         sleep(5)
