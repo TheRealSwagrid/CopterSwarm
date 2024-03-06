@@ -21,6 +21,7 @@ class CopterSwarm(AbstractVirtualCapability):
         self.uri = "CopterSwarm"
         self.copters: List[SubDeviceRepresentation] = []
         self.__locks = []
+        self.initialized = False
 
     def AddCopter(self, params: dict):
         self.copters.append(json.loads(params["Device"]))
@@ -48,16 +49,18 @@ class CopterSwarm(AbstractVirtualCapability):
         for i in range(count - len(self.copters)):
             self.copters.append(self.query_sync("VirtualCopter"))
             self.__locks.append(Lock())
+        self.initialized = True
         return {"DeviceList": self.copters}
 
     def loop(self):
-        for i, copter in enumerate(self.copters):
-            battery_lvl = copter.invoke_sync("GetBatteryChargeLevel", {})["BatteryChargeLevel"]
-            if battery_lvl < 15.:
-                formatPrint(f"Loading Copter: {copter.ood_id}")
-                self.__locks[i].acquire()
-                copter.invoke_sync("SetBatteryChargeLevel", {"BatteryChargeLevel": 100})
-                self.__locks[i].release()
+        if self.initialized:
+            for i, copter in enumerate(self.copters):
+                battery_lvl = copter.invoke_sync("GetBatteryChargeLevel", {})["BatteryChargeLevel"]
+                if battery_lvl < 15.:
+                    formatPrint(f"Loading Copter: {copter.ood_id}")
+                    self.__locks[i].acquire()
+                    copter.invoke_sync("SetBatteryChargeLevel", {"BatteryChargeLevel": 100})
+                    self.__locks[i].release()
         sleep(.0001)
 
 
