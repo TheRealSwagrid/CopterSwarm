@@ -51,7 +51,7 @@ class CopterSwarm(AbstractVirtualCapability):
         return {"DeviceList": self.copters}
 
     def loop(self):
-        for i, copter in enumerate(self.copters):
+        for i, copter in enumerate([]):
             battery_lvl = copter.invoke_sync("GetBatteryChargeLevel", {})["BatteryChargeLevel"]
             if battery_lvl < 15.:
                 formatPrint(f"Loading Copter: {copter.ood_id}")
