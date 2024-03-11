@@ -64,7 +64,7 @@ class CopterSwarm(AbstractVirtualCapability):
                     copter.invoke_sync("SetPosition", self.charging_station.invoke_sync("GetPosition", {}))
                     copter.invoke_sync("SetBatteryChargeLevel", {"BatteryChargeLevel": 100})
                     self.__locks[i].release()
-        sleep(5)
+        sleep(30)
 
 
 if __name__ == '__main__':
