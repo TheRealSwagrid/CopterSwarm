@@ -34,6 +34,7 @@ class CopterSwarm(AbstractVirtualCapability):
             for i, l in enumerate(self.__locks):
                 if not l.locked():
                     l.acquire()
+                    formatPrint(self, f"DEBUG: Transferring copter {i} with Battery: " + self.copters[i].invoke_sync("GetBatteryChargeLevel", {}))
                     return {"Device": self.copters[i]}
         raise ValueError("No copter in this swarm!")
 
