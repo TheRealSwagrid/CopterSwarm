@@ -64,7 +64,7 @@ class CopterSwarm(AbstractVirtualCapability):
                     self.__locks[i].acquire()
                     copter.invoke_sync("SetPosition", self.charging_station.invoke_sync("GetPosition", {}))
                     self.charging_station.invoke_async("ChargeDevice", {"Device": copter}, lambda *args: self.__locks[i].release())
-        sleep(15)
+        sleep(5)
 
 
 if __name__ == '__main__':
