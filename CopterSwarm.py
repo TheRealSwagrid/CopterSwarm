@@ -3,7 +3,7 @@ import json
 import os.path
 import signal
 import sys
-from copy import deepcopy
+from copy import deepcopy, copy
 from threading import Lock
 from typing import List
 
@@ -20,7 +20,7 @@ class CopterSwarm(AbstractVirtualCapability):
         super().__init__(server)
         self.uri = "CopterSwarm"
         self.copters: List[SubDeviceRepresentation] = []
-        self.__locks = []
+        self.__locks: List[Lock] = []
         self.charging_station: SubDeviceRepresentation = None
         self.initialized = False
 
@@ -61,9 +61,10 @@ class CopterSwarm(AbstractVirtualCapability):
                 battery_lvl = copter.invoke_sync("GetBatteryChargeLevel", {})["BatteryChargeLevel"]
                 if battery_lvl < 25.:
                     formatPrint(self, f"Loading Copter: {copter.ood_id}")
-                    self.__locks[i].acquire()
+                    key = copy(i)
+                    self.__locks[key].acquire()
                     copter.invoke_sync("SetPosition", self.charging_station.invoke_sync("GetPosition", {}))
-                    self.charging_station.invoke_async("ChargeDevice", {"Device": copter}, lambda *args: self.__locks[i].release())
+                    self.charging_station.invoke_async("ChargeDevice", {"Device": copter}, lambda *args: self.__locks[key].release())
         sleep(5)
 
 
